@@ -250,7 +250,7 @@ def load_classifier_model():
             st.error("Model file not found. Please check if the model file exists in the correct path.")
             return None
             
-        model = load_model(model_path, compile=False)
+        model = tf.keras.models.load_model(model_path, compile=False)
         return model
     except Exception as e:
         st.error(f"Error loading the model: {str(e)}")
@@ -710,4 +710,5 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
