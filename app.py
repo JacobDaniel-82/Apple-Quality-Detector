@@ -244,39 +244,26 @@ def fancy_header():
 # Function to load the model
 @st.cache_resource
 def load_classifier_model():
+    model_path = "final_apple_model.h5" # Or your exact filename
+    
+    import tensorflow as tf
+    from tensorflow.keras.layers import InputLayer
+
+    # This patch manually maps 'batch_shape' to 'batch_input_shape'
+    class LegacyInputLayer(InputLayer):
+        def __init__(self, *args, **kwargs):
+            if 'batch_shape' in kwargs:
+                kwargs['batch_input_shape'] = kwargs.pop('batch_shape')
+            super().__init__(*args, **kwargs)
+
     try:
-        import h5py
-        import tensorflow as tf
-        
-        model_path = "apple_model.h5"
-        
-        if not os.path.exists(model_path):
-            st.error("Model file not found!")
-            return None
-        
-        # Patch the h5 file's config on-the-fly
-        with h5py.File(model_path, 'r+') as f:
-            if 'model_config' in f.attrs:
-                config = json.loads(f.attrs['model_config'])
-                
-                # Replace batch_shape with batch_input_shape
-                def fix_config(cfg):
-                    if isinstance(cfg, dict):
-                        if 'batch_shape' in cfg:
-                            cfg['batch_input_shape'] = cfg.pop('batch_shape')
-                        for v in cfg.values():
-                            fix_config(v)
-                    elif isinstance(cfg, list):
-                        for item in cfg:
-                            fix_config(item)
-                
-                fix_config(config)
-                f.attrs['model_config'] = json.dumps(config)
-        
-        # Now load the patched model
-        model = tf.keras.models.load_model(model_path, compile=False)
+        # Load using the patched layer as a custom object
+        model = tf.keras.models.load_model(
+            model_path,
+            custom_objects={'InputLayer': LegacyInputLayer},
+            compile=False
+        )
         return model
-        
     except Exception as e:
         st.error(f"Error loading the model: {str(e)}")
         return None
@@ -735,6 +722,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
