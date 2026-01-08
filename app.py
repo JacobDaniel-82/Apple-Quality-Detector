@@ -243,38 +243,17 @@ def fancy_header():
     """, unsafe_allow_html=True)
 
 # Function to load the model
+@st.cache_resource
 def load_classifier_model():
     model_path = "final_apple_model.h5"
     
-    print(f"DEBUG: Looking for model at: {model_path}")
-    print(f"DEBUG: File exists? {os.path.exists(model_path)}")
-    
-    import tensorflow as tf
-    from tensorflow.keras.layers import InputLayer
-    
-    class LegacyInputLayer(InputLayer):
-        def __init__(self, *args, **kwargs):
-            if 'batch_shape' in kwargs:
-                kwargs['batch_input_shape'] = kwargs.pop('batch_shape')
-            super().__init__(*args, **kwargs)
-    
     try:
-        print(f"DEBUG: Attempting to load model...")
-        model = tf.keras.models.load_model(
-            model_path,
-            custom_objects={
-                'InputLayer': LegacyInputLayer,
-                'FixedDropout': tf.keras.layers.Dropout
-            },
-            compile=False
-        )
-        print(f"DEBUG: Model loaded successfully!")
+        import tensorflow as tf
+        model = tf.keras.models.load_model(model_path, compile=False)
         return model
     except Exception as e:
-        print(f"DEBUG: Exception occurred: {type(e).__name__}: {str(e)}")
         st.error(f"Error loading the model: {str(e)}")
         return None
-
 # Function to preprocess the image
 def preprocess_image(img):
     # Convert to RGB if needed
@@ -729,6 +708,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
