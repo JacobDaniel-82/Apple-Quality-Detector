@@ -245,7 +245,7 @@ def fancy_header():
 @st.cache_resource
 def load_classifier_model():
     try:
-        model_path = "apple_model.h5"
+        model_path = "final_apple_model.h5"
         if not os.path.exists(model_path):
             st.error("Model file not found!")
             return None
@@ -726,6 +726,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
