@@ -12,6 +12,9 @@ import base64
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration
 import av
 
+import sys
+st.write(f"Python version: {sys.version}")
+
 # Page configuration
 st.set_page_config(
     page_title="Apple Disease Classifier",
@@ -242,33 +245,35 @@ def fancy_header():
     """, unsafe_allow_html=True)
 
 # Function to load the model
-@st.cache_resource
 def load_classifier_model():
-    model_path = "final_apple_model.h5" # Make sure this matches your GitHub filename
+    model_path = "final_apple_model.h5"
+    
+    print(f"DEBUG: Looking for model at: {model_path}")
+    print(f"DEBUG: File exists? {os.path.exists(model_path)}")
     
     import tensorflow as tf
-    import efficientnet.keras as efn
     from tensorflow.keras.layers import InputLayer
-
-    # Fix for the 'batch_shape' error
+    
     class LegacyInputLayer(InputLayer):
         def __init__(self, *args, **kwargs):
             if 'batch_shape' in kwargs:
                 kwargs['batch_input_shape'] = kwargs.pop('batch_shape')
             super().__init__(*args, **kwargs)
-
+    
     try:
-        # Load the model with both the EfficientNet keys AND the Legacy Layer fix
+        print(f"DEBUG: Attempting to load model...")
         model = tf.keras.models.load_model(
             model_path,
             custom_objects={
                 'InputLayer': LegacyInputLayer,
-                'FixedDropout': tf.keras.layers.Dropout # EfficientNet often needs this
+                'FixedDropout': tf.keras.layers.Dropout
             },
             compile=False
         )
+        print(f"DEBUG: Model loaded successfully!")
         return model
     except Exception as e:
+        print(f"DEBUG: Exception occurred: {type(e).__name__}: {str(e)}")
         st.error(f"Error loading the model: {str(e)}")
         return None
 
@@ -726,6 +731,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
