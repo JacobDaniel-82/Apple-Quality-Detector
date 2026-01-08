@@ -245,25 +245,36 @@ def fancy_header():
 @st.cache_resource
 def load_classifier_model():
     try:
-        import json
+        import h5py
+        import tensorflow as tf
+        
         model_path = "apple_model.h5"
         
         if not os.path.exists(model_path):
             st.error("Model file not found!")
             return None
         
-        # Patch for Keras compatibility issue
-        # This fixes the 'batch_shape' → 'batch_input_shape' issue
-        import tensorflow as tf
-        from tensorflow.python.keras.saving import hdf5_format
+        # Patch the h5 file's config on-the-fly
+        with h5py.File(model_path, 'r+') as f:
+            if 'model_config' in f.attrs:
+                config = json.loads(f.attrs['model_config'])
+                
+                # Replace batch_shape with batch_input_shape
+                def fix_config(cfg):
+                    if isinstance(cfg, dict):
+                        if 'batch_shape' in cfg:
+                            cfg['batch_input_shape'] = cfg.pop('batch_shape')
+                        for v in cfg.values():
+                            fix_config(v)
+                    elif isinstance(cfg, list):
+                        for item in cfg:
+                            fix_config(item)
+                
+                fix_config(config)
+                f.attrs['model_config'] = json.dumps(config)
         
-        # Load with custom object scope to handle the config mismatch
-        with tf.keras.utils.custom_object_scope({
-            'InputLayer': tf.keras.layers.InputLayer,
-        }):
-            # Try loading with safe_mode disabled
-            model = tf.keras.models.load_model(model_path, compile=False)
-        
+        # Now load the patched model
+        model = tf.keras.models.load_model(model_path, compile=False)
         return model
         
     except Exception as e:
@@ -724,6 +735,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
