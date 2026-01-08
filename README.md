@@ -24,7 +24,7 @@ Here is a quick look at the Fruit Quality Detection Web App in action:
 - The system classifies it as Healthy, Rotten, or Scab.
 - It then provides a visual advisory and explanation based on the prediction.
 
-> 🔗 *[Live Demo – Try the App]([https://food-quality-detector-lhyodzh53worpc3a4ehbwh.streamlit.app/](https://apple-quality-detector-2zadvyks5pprh7pxvruwuj.streamlit.app/))*
+> 🔗 *[Live Demo – Try the App](https://apple-quality-detector-2zadvyks5pprh7pxvruwuj.streamlit.app/)*
 
 
 ## Features
