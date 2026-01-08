@@ -369,7 +369,7 @@ class VideoProcessor(VideoTransformerBase):
         self.prediction = None
         self.confidence = 0
         self.last_prediction_time = time.time()
-        self.prediction_interval = 1.0  # Make prediction every 1 second
+        self.prediction_interval = 3.0  # Slow it down to every 3 seconds
         
     def transform(self, frame):
         img = frame.to_ndarray(format="bgr24")
@@ -708,4 +708,5 @@ with st.expander("How to use this app"):
     """)
 
 # Footer
+
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
