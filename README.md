@@ -1,4 +1,4 @@
-# Fruit Quality Detector
+# Apple Quality Detector
 
 A deep learning-based web application that classifies apples as Healthy, Rotten, or Scab-affected using a CNN model built with TensorFlow and deployed with Streamlit.
 
