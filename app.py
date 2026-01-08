@@ -247,14 +247,20 @@ def load_classifier_model():
     try:
         model_path = "apple_model.h5"
         if not os.path.exists(model_path):
-            st.error("Model file not found. Please check if the model file exists in the correct path.")
             return None
-            
+        
+        # We use the full path to the legacy loader to bypass Keras 3 issues
         model = tf.keras.models.load_model(model_path, compile=False)
         return model
     except Exception as e:
-        st.error(f"Error loading the model: {str(e)}")
-        return None
+        # If it still fails, try this absolute backup method:
+        try:
+            import h5py
+            model = tf.keras.models.load_model(h5py.File(model_path, 'r'), compile=False)
+            return model
+        except:
+            st.error(f"Error loading the model: {str(e)}")
+            return None
 
 # Function to preprocess the image
 def preprocess_image(img):
@@ -710,5 +716,6 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
