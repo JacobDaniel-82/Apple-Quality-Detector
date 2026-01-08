@@ -12,23 +12,6 @@ import base64
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration
 import av
 
-import os
-
-# Debug: Check what files exist
-st.write("Current working directory:", os.getcwd())
-st.write("Files in current directory:", os.listdir('.'))
-
-# Check if model exists
-if os.path.exists("final_apple_model.h5"):
-    st.write("✅ Model file found!")
-    st.write("File size:", os.path.getsize("final_apple_model.h5"), "bytes")
-else:
-    st.write("❌ Model file NOT found in current directory")
-    
-    # Check parent directories
-    if os.path.exists("../final_apple_model.h5"):
-        st.write("Found in parent directory!")
-
 # Page configuration
 st.set_page_config(
     page_title="Apple Disease Classifier",
@@ -743,6 +726,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
