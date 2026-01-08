@@ -250,7 +250,7 @@ def load_classifier_model():
             st.error("Model file not found. Please check if the model file exists in the correct path.")
             return None
             
-        model = load_model(model_path)
+        model = load_model(model_path, compile=False)
         return model
     except Exception as e:
         st.error(f"Error loading the model: {str(e)}")
@@ -474,11 +474,11 @@ with tab1:
             
             with col1:
                 st.markdown("#### Original Image")
-                st.image(img, caption="Uploaded Image", use_container_width=True)
+                st.image(img, caption="Uploaded Image", use_column_width=True)
                 
             with col2:
                 st.markdown("#### Enhanced Image")
-                st.image(enhanced_img, caption="Enhanced for Analysis", use_container_width=True)
+                st.image(enhanced_img, caption="Enhanced for Analysis", use_column_width=True)
             
             # Make prediction
             if model:
@@ -710,3 +710,4 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
