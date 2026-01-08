@@ -1,5 +1,6 @@
-streamlit
-pyngrok
-tensorflow
-opencv-python
-streamlit-webrtc
+streamlit==1.32.2
+tensorflow==2.12.0
+keras==2.12.0
+numpy==1.23.5
+opencv-python==4.8.1.78
+pillow==9.5.0
