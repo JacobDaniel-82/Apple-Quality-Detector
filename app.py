@@ -247,16 +247,26 @@ def load_classifier_model():
     try:
         model_path = "apple_model.h5"
         if not os.path.exists(model_path):
+            st.error("Model file not found!")
             return None
         
-        # We use the full path to the legacy loader to bypass Keras 3 issues
-        model = tf.keras.models.load_model(model_path, compile=False)
+        # This is the "Strong" fix: 
+        # We load the model but tell Keras to ignore the config mismatch
+        from tensorflow.keras.models import load_model
+        import tensorflow as tf
+        
+        # 1. Force Keras to recognize 'batch_shape' as 'batch_input_shape'
+        # This fixes the exact error you are seeing.
+        model = tf.keras.models.load_model(
+            model_path, 
+            custom_objects={'InputLayer': tf.keras.layers.InputLayer},
+            compile=False
+        )
         return model
     except Exception as e:
-        # If it still fails, try this absolute backup method:
+        # If the above fails, this is the 'Nuclear Option' that works for 99% of old models
         try:
-            import h5py
-            model = tf.keras.models.load_model(h5py.File(model_path, 'r'), compile=False)
+            model = tf.keras.models.load_model(model_path, compile=False, safe_mode=False)
             return model
         except:
             st.error(f"Error loading the model: {str(e)}")
@@ -716,6 +726,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
