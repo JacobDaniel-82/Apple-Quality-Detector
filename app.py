@@ -12,8 +12,6 @@ import base64
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase, RTCConfiguration
 import av
 
-import sys
-st.write(f"Python version: {sys.version}")
 
 # Page configuration
 st.set_page_config(
@@ -731,6 +729,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
