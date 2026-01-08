@@ -117,11 +117,8 @@ You can load the model from the `applemodel.h5` file and use it for predictions 
 
 ## 🔗 Related Links
 
-- [View Full Portfolio](../README.md)
+- [View Full Portfolio](https://github.com/JacobDaniel-82/portfolio.git)
 
 ---
 
 *Created By Jacob Daniel R | 2025*
-
-*Created by Jacob Daniel R | 2025*
-
