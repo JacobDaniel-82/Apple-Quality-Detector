@@ -244,12 +244,13 @@ def fancy_header():
 # Function to load the model
 @st.cache_resource
 def load_classifier_model():
-    model_path = "final_apple_model.h5" # Or your exact filename
+    model_path = "final_apple_model.h5" # Make sure this matches your GitHub filename
     
     import tensorflow as tf
+    import efficientnet.keras as efn
     from tensorflow.keras.layers import InputLayer
 
-    # This patch manually maps 'batch_shape' to 'batch_input_shape'
+    # Fix for the 'batch_shape' error
     class LegacyInputLayer(InputLayer):
         def __init__(self, *args, **kwargs):
             if 'batch_shape' in kwargs:
@@ -257,10 +258,13 @@ def load_classifier_model():
             super().__init__(*args, **kwargs)
 
     try:
-        # Load using the patched layer as a custom object
+        # Load the model with both the EfficientNet keys AND the Legacy Layer fix
         model = tf.keras.models.load_model(
             model_path,
-            custom_objects={'InputLayer': LegacyInputLayer},
+            custom_objects={
+                'InputLayer': LegacyInputLayer,
+                'FixedDropout': tf.keras.layers.Dropout # EfficientNet often needs this
+            },
             compile=False
         )
         return model
@@ -722,6 +726,7 @@ with st.expander("How to use this app"):
 # Footer
 
 st.markdown('<div class="footer">Apple Disease Classifier | Developed with Streamlit, TensorFlow & OpenCV<br>© 2025 - AI-Powered Food Safety</div>', unsafe_allow_html=True)
+
 
 
 
